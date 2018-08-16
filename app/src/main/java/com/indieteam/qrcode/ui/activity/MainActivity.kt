@@ -208,12 +208,12 @@ open class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissio
     var i = 0
     override fun onResume(){
         super.onResume()
+        i++
         start()
         if(supportFragmentManager.findFragmentByTag("result_fragment") == null && i>1) {
             checkMlCallback = 1
             open()
         }
-        i++
     }
 
     override fun onPause() {
