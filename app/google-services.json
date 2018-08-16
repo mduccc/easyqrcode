@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "512767994767",
+    "firebase_url": "https://qrcode-e90fe.firebaseio.com",
+    "project_id": "qrcode-e90fe",
+    "storage_bucket": "qrcode-e90fe.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:512767994767:android:5405c8efe24caaf6",
+        "android_client_info": {
+          "package_name": "com.indieteam.qrcode"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "512767994767-dsjick2n6ktd5j4isd09vnh2g3rfjhfk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDVc_v9C2DdT35AhcWKuqjReFSU1bryUmc"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

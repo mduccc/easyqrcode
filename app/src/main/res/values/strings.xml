@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">Easy Qrcode</string>
+    <string name="take"></string>
+    <string name="back"></string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="lable">Lable</string>
+    <string name="text">Text</string>
+    <string name="qr">QR code</string>
+    <string name="face">Face</string>
+</resources>
