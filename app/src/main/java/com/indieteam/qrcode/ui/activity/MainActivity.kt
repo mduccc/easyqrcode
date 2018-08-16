@@ -210,6 +210,7 @@ open class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissio
         super.onResume()
         start()
         if(supportFragmentManager.findFragmentByTag("result_fragment") == null && i>1) {
+            checkMlCallback = 1
             open()
         }
         i++
