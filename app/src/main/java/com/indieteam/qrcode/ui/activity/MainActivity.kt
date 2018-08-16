@@ -85,7 +85,7 @@ open class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissio
         val permissions = Permission(this)
         /*--detectedCamera--*/
         if (detectedCam.checkCamereHardware()){
-            if (permissions.getPermissionCam() && permissions.getPermissionStorage()){
+            if (permissions.getPermissionCam()){
                 init()
                 mytextureView.surfaceTextureListener = TextureListener()
             }
@@ -222,8 +222,10 @@ open class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissio
 
     override fun onDestroy() {
         super.onDestroy()
-        wakeScreen.release()
-        cancel()
+        try {
+            wakeScreen.release()
+            cancel()
+        }catch (e: Exception){}
     }
 
     override fun onBackPressed() {
