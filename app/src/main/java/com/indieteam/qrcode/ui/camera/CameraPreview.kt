@@ -37,9 +37,9 @@ class CameraPreview(val activity: MainActivity){
             //output to draw image on
             activity.captureRequestForPreview.let {
 
-                val cropRect = Rect(0, 0, activity.camOutputSizeWidth, activity.camOutputSizeWidth)
+                //val cropRect = Rect(0, 0, activity.camOutputSizeWidth, activity.camOutputSizeWidth)
                 //it.set(CaptureRequest.CONTROL_AE_TARGET_FPS_RANGE, Range(0, 30))
-                it.set(CaptureRequest.SCALER_CROP_REGION, cropRect)
+                //it.set(CaptureRequest.SCALER_CROP_REGION, cropRect)
                 it.addTarget(Surface(texture))
                 it.addTarget(activity.imageReader.surface)
             }
