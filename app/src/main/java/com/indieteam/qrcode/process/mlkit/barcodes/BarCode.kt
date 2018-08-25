@@ -20,7 +20,7 @@ class BarCode {
         result = ""
         var image = FirebaseVisionImage.fromMediaImage(imageYUV, rotation)
         val detector = FirebaseVision.getInstance()
-                .getVisionBarcodeDetector()
+                .visionBarcodeDetector
 
         detector.detectInImage(image)
                 .addOnSuccessListener {
@@ -51,6 +51,7 @@ class BarCode {
                 }
                 .addOnFailureListener {
                     context.checkMlCallback = 1
+                    Log.d("err", "run addOnFailureListener")
                 }
         image?.let { image = null }
 

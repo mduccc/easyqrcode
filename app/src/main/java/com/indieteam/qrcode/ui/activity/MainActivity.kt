@@ -57,11 +57,13 @@ open class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissio
     var heightPixels = 0
     var camOutputSizeWidth = 0
     var camOutputSizeHeight = 0
+    var previewWidth = 0
+    var previewHeight = 0
     private var sensorOrientation = 0
     var cameraOpen = 0
     lateinit var imageReader: ImageReader
     lateinit var imageOnFrame: Image
-    private var quality = 4
+    private var quality = 2
     var useCamera = ""
     private lateinit var wakeScreen: PowerManager.WakeLock
     lateinit var draw: Draw
@@ -139,11 +141,14 @@ open class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissio
         windowManager.defaultDisplay.getMetrics(displayMetrics)
         widthPixels = displayMetrics.widthPixels
         heightPixels = displayMetrics.heightPixels
+        previewWidth = widthPixels
+        previewHeight = heightPixels
 
         manager = this.getSystemService(Context.CAMERA_SERVICE) as CameraManager
         val getListCam = GetListCameraDevice(this)
         camID = getListCam.getList()
         useCamera = camID[0]
+
     }
 
     fun open(){
@@ -164,27 +169,31 @@ open class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissio
     fun getSizes(){
         characteristics = manager.getCameraCharacteristics(useCamera)
         val configs = characteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP)
-        val size: Size
-        loop@ for (item in configs.getOutputSizes(ImageFormat.JPEG)) {
-            when((item.width/4)*3){
-                item.height ->{
-                    Log.d("ratio ouput size", "${item.width}/${item.height}")
-                    size = item
-                    camOutputSizeWidth = size.width
-                    camOutputSizeHeight = size.height
-                    break@loop
-                }
-                else->{
-                    Log.d("ratio ouput size", "${item.width/item.height}")
-                    size = item
-                    camOutputSizeWidth = size.width
-                    camOutputSizeHeight = size.height
-                    break@loop
+        val size = configs.getOutputSizes(ImageFormat.JPEG)
+        loop@for (item in size) {
+            camOutputSizeWidth = item.width
+            camOutputSizeHeight = item.height
+            var ratio: Float
+            if (camOutputSizeWidth > camOutputSizeHeight) {
+                ratio = camOutputSizeWidth.toFloat() / camOutputSizeHeight.toFloat()
+                Log.d("ratio", ratio.toString())
+                Log.d("4:3", (4f / 3f).toString())
+
+                when (ratio) {
+                    4f / 3f -> {
+                        previewHeight = (previewWidth / 3) * 4
+                        break@loop
+                    }
+                    16f / 9f -> {
+                        previewHeight = (previewHeight / 9) * 16
+                        break@loop
+                    }
                 }
             }
         }
+
         sensorOrientation = SCREEN_ORIENTATION_PORTRAIT
-        imageReader = ImageReader.newInstance(camOutputSizeWidth/quality, camOutputSizeHeight/quality, ImageFormat.YUV_420_888, 1)
+        imageReader = ImageReader.newInstance(previewWidth/quality, previewHeight/quality, ImageFormat.YUV_420_888, 1)
 
         imageReader.setOnImageAvailableListener(OnFrameListen(this), mBackgroundHandler)
     }

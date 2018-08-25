@@ -23,7 +23,7 @@ class CameraPreview(val activity: MainActivity){
 
         val texture = activity.mytextureView.surfaceTexture
         //resolution will show on preview
-        texture.setDefaultBufferSize(activity.camOutputSizeWidth, activity.camOutputSizeHeight)
+        texture.setDefaultBufferSize(activity.previewWidth, activity.previewHeight)
 
         val outputSurface = ArrayList<Surface>(2)
         outputSurface.let {

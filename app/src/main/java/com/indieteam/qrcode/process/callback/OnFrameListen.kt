@@ -8,7 +8,7 @@ class OnFrameListen(val activity: MainActivity): ImageReader.OnImageAvailableLis
     override fun onImageAvailable(reader: ImageReader) {
         activity.j++
         activity.imageOnFrame = reader.acquireNextImage()
-        if(activity.j == 10 && activity.checkMlCallback == 1) {
+        if(activity.checkMlCallback == 1) {
             activity.barCode.run(activity, activity.imageOnFrame, Rotation(activity).get(activity.useCamera))
             activity.j = 0
         }
