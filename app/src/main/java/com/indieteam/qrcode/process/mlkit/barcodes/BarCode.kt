@@ -27,17 +27,101 @@ class BarCode {
                     for (i in it){
                         val valueType = i.valueType
                         when(valueType){
-                            FirebaseVisionBarcode.TYPE_TEXT -> {
-                                //Log.d("Barcode", i.displayValue.toString())
-                                result += i.displayValue.toString()
+                            FirebaseVisionBarcode.TYPE_CALENDAR_EVENT -> {
+                                result += "EVENT: " +
+                                        "\n\n Status: \n" +
+                                        i.calendarEvent?.status.toString() +
+                                        "\n\n Summary: \n" +
+                                        i.calendarEvent?.summary.toString() +
+                                        "\n\n Description: \n" +
+                                        i.calendarEvent?.description.toString() +
+                                        "\n\n Start: \n" +
+                                        i.calendarEvent?.start?.hours +
+                                        ":" + i.calendarEvent?.start?.minutes +
+                                        i.calendarEvent?.start?.day +
+                                        "/" + i.calendarEvent?.start?.month +
+                                        "/" + i.calendarEvent?.start?.year +
+                                        "\n\n End: \n" +
+                                        i.calendarEvent?.end?.hours +
+                                        ":" + i.calendarEvent?.end?.minutes +
+                                        i.calendarEvent?.end?.day +
+                                        "/" + i.calendarEvent?.end?.month +
+                                        "/" + i.calendarEvent?.end?.year +
+                                        "\n\n Location: \n" +
+                                        i.calendarEvent?.location
                             }
-                            FirebaseVisionBarcode.FORMAT_QR_CODE -> {
-                                //Log.d("Barcode", i.displayValue.toString())
-                                result += i.displayValue.toString()
+                            FirebaseVisionBarcode.FORMAT_QR_CODE ->{
+                                result += "CODE: \n\n" + i.displayValue.toString()
+                            }
+                            FirebaseVisionBarcode.FORMAT_UNKNOWN ->{
+                                result += "RESULT: \n\n" + i.displayValue.toString()
+                            }
+                            FirebaseVisionBarcode.TYPE_CONTACT_INFO ->{
+                                result += "CONTACTS:" +
+                                        "\n\n Name: \n" + i.contactInfo?.name?.last +
+                                        " " + i.contactInfo?.name?.first +
+                                        "\n\n Phone: \n"
+                                if(i.contactInfo?.phones != null){
+                                    for (phone in i.contactInfo!!.phones){
+                                        result += phone.number + "\n"
+                                    }
+                                }
+                                result += "\n Email: \n"
+                                if(i.contactInfo?.emails != null){
+                                    for (email in i.contactInfo!!.emails){
+                                        result += email.address + "\n"
+                                    }
+                                }
+                                result += "\n Addresses: \n"
+                                if(i.contactInfo?.addresses != null){
+                                    for (addresses in i.contactInfo!!.addresses){
+                                        for(addressesLines in addresses.addressLines){
+                                            result += addressesLines + "\n"
+                                        }
+                                    }
+                                }
+                                result += "\n Title: \n" + i.contactInfo?.title +
+                                        "\n\n  Organization: \n" + i.contactInfo?.organization + "" +
+                                        "\n\n Website: \n" + i.contactInfo?.urls?.get(0)
+                            }
+                            FirebaseVisionBarcode.TYPE_PHONE ->{
+                                result += "PHONE: " +
+                                        "\n\n Number: " + i.phone?.number
+                            }
+                            FirebaseVisionBarcode.TYPE_EMAIL ->{
+                                result += "EMAIL: " +
+                                        "\n\n Address: \n" +
+                                        i.email?.address +
+                                        "\n\n Subject: \n" +
+                                        i.email?.subject +
+                                        "\n\n Body: \n" +
+                                        i.email?.body
+                            }
+                            FirebaseVisionBarcode.TYPE_WIFI ->{
+                                result += "WIFI: " +
+                                        "\n\n SSID: " + i.wifi?.ssid +
+                                        "\n Password: " + i.wifi?.password +
+                                        "\n Encryption Type: " + i.wifi?.encryptionType
+                            }
+                            FirebaseVisionBarcode.TYPE_SMS ->{
+                                result += "SMS: " +
+                                        "\n\n Phone number: \n" + i.sms?.phoneNumber +
+                                        "\n\n Message: \n" + i.sms?.message
+
+                            }
+                            FirebaseVisionBarcode.TYPE_TEXT ->{
+                                result += "TEXT: \n\n" + i.displayValue
+                            }
+                            FirebaseVisionBarcode.TYPE_URL ->{
+                                result += "URL: \n\n" + i.displayValue
+                            }
+                            FirebaseVisionBarcode.TYPE_GEO ->{
+                                result += "GEOLOCATION: " +
+                                        "\n\n Lat: " + i.geoPoint?.lat +
+                                        "\n Lng: " + i.geoPoint?.lng
                             }
                             else -> {
-                                //Log.d("Barcode", i.displayValue.toString())
-                                result += i.displayValue.toString()
+                                result += "RESULT: \n\n" + i.displayValue
                             }
                         }
                     }
