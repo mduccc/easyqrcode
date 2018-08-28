@@ -61,28 +61,42 @@ class BarCode {
                                         "\n\n Name: \n" + i.contactInfo?.name?.last +
                                         " " + i.contactInfo?.name?.first +
                                         "\n\n Phone: \n"
-                                if(i.contactInfo?.phones != null){
-                                    for (phone in i.contactInfo!!.phones){
-                                        result += phone.number + "\n"
-                                    }
-                                }
-                                result += "\n Email: \n"
-                                if(i.contactInfo?.emails != null){
-                                    for (email in i.contactInfo!!.emails){
-                                        result += email.address + "\n"
-                                    }
-                                }
-                                result += "\n Addresses: \n"
-                                if(i.contactInfo?.addresses != null){
-                                    for (addresses in i.contactInfo!!.addresses){
-                                        for(addressesLines in addresses.addressLines){
-                                            result += addressesLines + "\n"
+                                i.contactInfo?.let {
+                                    it.phones?.let {
+                                        for (phone in it) {
+                                            result += phone.number + "\n"
                                         }
                                     }
                                 }
+                                result += "\n Email: \n"
+                                i.contactInfo?.let {
+                                    it.emails?.let {
+                                        for (email in it) {
+                                            result += email.address + "\n"
+                                        }
+                                    }
+                                }
+                                result += "\n Addresses: \n"
+                                i.contactInfo?.let {
+                                    it.addresses?.let {
+                                        for (addresses in it){
+                                            for(addressesLines in addresses.addressLines){
+                                                result += addressesLines + "\n"
+                                            }
+                                        }
+                                    }
+                                }
+
                                 result += "\n Title: \n" + i.contactInfo?.title +
                                         "\n\n  Organization: \n" + i.contactInfo?.organization + "" +
-                                        "\n\n Website: \n" + i.contactInfo?.urls?.get(0)
+                                        "\n\n Website: \n"
+                                i.contactInfo?.let {
+                                    it.urls?.let {
+                                        for(url in it){
+                                            result += url
+                                        }
+                                    }
+                                }
                             }
                             FirebaseVisionBarcode.TYPE_PHONE ->{
                                 result += "PHONE: " +
