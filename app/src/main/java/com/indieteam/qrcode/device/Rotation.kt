@@ -11,9 +11,7 @@ class Rotation(val activity: MainActivity){
     fun get(camID: String): Int{
         val deviceRotation = activity.windowManager.defaultDisplay.rotation
         var rotationCompensation = MainActivity.ORIENTATIONS.get(deviceRotation)
-
-        val camM = activity.getSystemService(Context.CAMERA_SERVICE) as CameraManager
-        val sensorOrientation = camM.getCameraCharacteristics(camID)
+        val sensorOrientation = activity.manager.getCameraCharacteristics(camID)
                 .get(CameraCharacteristics.SENSOR_ORIENTATION)
         rotationCompensation = (rotationCompensation + sensorOrientation + 270) / 360
         //Log.d("rotateeeee", rotationCompensation.toString())
@@ -25,4 +23,5 @@ class Rotation(val activity: MainActivity){
             else -> FirebaseVisionImageMetadata.ROTATION_90
         }
     }
+
 }

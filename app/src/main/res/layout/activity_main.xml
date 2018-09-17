@@ -1,7 +1,7 @@
 <RelativeLayout android:id="@+id/rl_main_act"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorBlack"
+    android:background="@color/colorWhite"
     tools:context="com.indieteam.qrcode.ui.activity.MainActivity"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">

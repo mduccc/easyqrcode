@@ -6,7 +6,6 @@ import android.content.Intent
 import android.content.pm.ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 import android.content.pm.PackageManager
 import android.graphics.ImageFormat
-import android.graphics.Rect
 import android.graphics.SurfaceTexture
 import android.hardware.camera2.*
 import android.media.Image
@@ -20,14 +19,11 @@ import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.util.DisplayMetrics
 import android.util.Log
-import android.util.Size
 import android.util.SparseIntArray
 import android.view.Surface
 import android.view.TextureView
 import android.view.WindowManager
-import android.widget.RelativeLayout
 import android.widget.Toast
-import com.google.firebase.ml.vision.common.FirebaseVisionImageMetadata
 import com.indieteam.qrcode.R
 import com.indieteam.qrcode.R.layout.activity_main
 import com.indieteam.qrcode.device.DetectedCamera
@@ -35,11 +31,10 @@ import com.indieteam.qrcode.device.GetListCameraDevice
 import com.indieteam.qrcode.device.PERMISSIONS_REQUEST_CAMERA
 import com.indieteam.qrcode.device.Permission
 import com.indieteam.qrcode.process.callback.CameraOpenCallback
-import com.indieteam.qrcode.process.callback.CameraPreviewSessionCallback
 import com.indieteam.qrcode.process.callback.OnFrameListen
 import com.indieteam.qrcode.process.mlkit.barcodes.BarCode
 import com.indieteam.qrcode.ui.camera.CameraPreview
-import com.indieteam.qrcode.ui.draw.Draw
+import com.indieteam.qrcode.ui.draw.DrawOnPrevew
 import com.indieteam.qrcode.ui.fragment.ResultFragment
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -51,7 +46,7 @@ open class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissio
     lateinit var cameraCaptureSessionForPreview: CameraCaptureSession
     private lateinit var camID : List<String>
     lateinit var mCamera :CameraDevice
-    private lateinit var manager: CameraManager
+    lateinit var manager: CameraManager
     private lateinit var characteristics: CameraCharacteristics
     var widthPixels = 0
     var heightPixels = 0
@@ -66,16 +61,14 @@ open class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissio
     private var quality = 2
     var useCamera = ""
     private lateinit var wakeScreen: PowerManager.WakeLock
-    lateinit var draw: Draw
+    lateinit var drawOnPrevew: DrawOnPrevew
     var barCode = BarCode()
     var checkMlCallback = 1
     val resultFragment = ResultFragment()
     lateinit var cameraPreview: CameraPreview
     var j = 0
 
-    companion object {
-        val ORIENTATIONS = SparseIntArray()
-    }
+    companion object { val ORIENTATIONS = SparseIntArray() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -86,7 +79,7 @@ open class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissio
         //val getListCam = getListCameraDevice(this)
         val permissions = Permission(this)
         /*--detectedCamera--*/
-        if (detectedCam.checkCamereHardware()){
+        if (detectedCam.checkCameraHardware()){
             if (permissions.getPermissionCam()){
                 init()
                 mytextureView.surfaceTextureListener = TextureListener()
@@ -111,18 +104,13 @@ open class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissio
     }
 
     inner class TextureListener: TextureView.SurfaceTextureListener{
-        override fun onSurfaceTextureSizeChanged(surface: SurfaceTexture?, width: Int, height: Int) {
-        }
+        override fun onSurfaceTextureSizeChanged(surface: SurfaceTexture?, width: Int, height: Int) {}
 
         override fun onSurfaceTextureUpdated(surface: SurfaceTexture?) {}
 
-        override fun onSurfaceTextureDestroyed(surface: SurfaceTexture?): Boolean {
-            return false
-        }
+        override fun onSurfaceTextureDestroyed(surface: SurfaceTexture?): Boolean { return false }
 
-        override fun onSurfaceTextureAvailable(surface: SurfaceTexture?, width: Int, height: Int) {
-            open()
-        }
+        override fun onSurfaceTextureAvailable(surface: SurfaceTexture?, width: Int, height: Int) { open() }
     }
 
     private fun init(){
@@ -158,8 +146,7 @@ open class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissio
                     arrayOf(Manifest.permission.CAMERA),
                     PERMISSIONS_REQUEST_CAMERA)
         }else{
-            try {
-                manager.openCamera(useCamera, CameraOpenCallback(this), null)
+            try { manager.openCamera(useCamera, CameraOpenCallback(this), null)
             }catch (e: CameraAccessException){
                 Toast.makeText(this, "Err when open", Toast.LENGTH_LONG).show()
             }
@@ -170,26 +157,22 @@ open class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissio
         characteristics = manager.getCameraCharacteristics(useCamera)
         val configs = characteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP)
         val size = configs.getOutputSizes(ImageFormat.JPEG)
-        loop@for (item in size) {
+
+        for (i in 0 until size.size - 1)
+            for (j in i+1 until size.size)
+                if (size[i].width < size[j].width) {
+                    val temp = size[i]
+                    size[i] = size[j]
+                    size[j] = temp
+                }
+
+        val needRatio = 4f/3f
+        for (item in size) {
             camOutputSizeWidth = item.width
             camOutputSizeHeight = item.height
-            var ratio: Float
-            if (camOutputSizeWidth > camOutputSizeHeight) {
-                ratio = camOutputSizeWidth.toFloat() / camOutputSizeHeight.toFloat()
-                Log.d("ratio", ratio.toString())
-                Log.d("4:3", (4f / 3f).toString())
-
-                when (ratio) {
-                    4f / 3f -> {
-                        previewHeight = (previewWidth / 3) * 4
-                        break@loop
-                    }
-                    16f / 9f -> {
-                        previewHeight = (previewHeight / 9) * 16
-                        break@loop
-                    }
-                }
-            }
+            val ratio: Float = camOutputSizeWidth.toFloat() / camOutputSizeHeight.toFloat()
+            Log.d("ratio", ratio.toString())
+            if (ratio == needRatio){ previewHeight = previewWidth/3 * 4; break }
         }
 
         sensorOrientation = SCREEN_ORIENTATION_PORTRAIT
@@ -226,15 +209,12 @@ open class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissio
     }
 
     override fun onPause() {
-        super.onPause()
-        cancel()
+        super.onPause(); cancel()
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        try {
-            wakeScreen.release()
-            cancel()
+        try { wakeScreen.release(); cancel()
         }catch (e: Exception){}
     }
 
@@ -254,22 +234,11 @@ open class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissio
     }
 
     private fun cancel(){
-        try {
-            mBackgroundHandler.removeCallbacks(mBackgroundThread)
-            mBackgroundThread.quitSafely()
-        }catch (e: Exception){
-
-        }
-        try{
-            mCamera.close()
-            cameraOpen = 0
-        }catch (e: UninitializedPropertyAccessException){
-            e.printStackTrace()
-        }
-        try {
-            mBackgroundThread.join()
-        }catch (e: InterruptedException){
-            e.printStackTrace()
-        }
+        try { mBackgroundHandler.removeCallbacks(mBackgroundThread); mBackgroundThread.quitSafely()
+        }catch (e: Exception){ }
+        try{ mCamera.close(); cameraOpen = 0
+        }catch (e: UninitializedPropertyAccessException){ e.printStackTrace() }
+        try { mBackgroundThread.join()
+        }catch (e: InterruptedException){ e.printStackTrace() }
     }
 }

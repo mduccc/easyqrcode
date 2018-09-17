@@ -8,9 +8,9 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/ic_qr_code"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@drawable/ic_qr_code"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:largeHeap="true">
@@ -25,7 +25,7 @@
 
         <meta-data
             android:name="com.google.firebase.ml.vision.DEPENDENCIES"
-            android:value="qrcode" />
+            android:value="orc" />
     </application>
 
 </manifest>

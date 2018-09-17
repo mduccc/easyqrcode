@@ -18,10 +18,8 @@ class Permission(private val activity: Activity){
             requestPermissions(activity,
                         arrayOf(Manifest.permission.CAMERA),
                     PERMISSIONS_REQUEST_CAMERA)
-        }else{
-            //Toast.makeText(activity, "permission granded", Toast.LENGTH_LONG).show()
-            bol = true
-        }
+        }else{ bol = true }
         return bol
     }
+
 }

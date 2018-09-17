@@ -6,6 +6,7 @@ import com.indieteam.qrcode.ui.activity.MainActivity
 import com.indieteam.qrcode.ui.camera.CameraPreview
 
 class CameraOpenCallback(val activity: MainActivity): CameraDevice.StateCallback(){
+
     override fun onOpened(camera: CameraDevice?) {
         activity.cameraOpen = 1
         activity.mCamera = camera!!
@@ -14,10 +15,7 @@ class CameraOpenCallback(val activity: MainActivity): CameraDevice.StateCallback
         activity.cameraPreview.init()
     }
 
-    override fun onDisconnected(camera: CameraDevice?) {
-        activity.mCamera.close()
-        activity.cameraOpen = 0
-    }
+    override fun onDisconnected(camera: CameraDevice?) { activity.mCamera.close(); activity.cameraOpen = 0 }
 
     override fun onError(camera: CameraDevice?, error: Int) {
         activity.runOnUiThread {
@@ -26,4 +24,5 @@ class CameraOpenCallback(val activity: MainActivity): CameraDevice.StateCallback
         activity.mCamera.close()
         activity.cameraOpen = 0
     }
+
 }

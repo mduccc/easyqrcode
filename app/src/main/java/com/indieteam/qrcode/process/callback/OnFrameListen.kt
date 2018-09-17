@@ -5,6 +5,7 @@ import com.indieteam.qrcode.device.Rotation
 import com.indieteam.qrcode.ui.activity.MainActivity
 
 class OnFrameListen(val activity: MainActivity): ImageReader.OnImageAvailableListener{
+
     override fun onImageAvailable(reader: ImageReader) {
         activity.j++
         activity.imageOnFrame = reader.acquireNextImage()
@@ -14,4 +15,5 @@ class OnFrameListen(val activity: MainActivity): ImageReader.OnImageAvailableLis
         }
         activity.imageOnFrame.close()
     }
+
 }
