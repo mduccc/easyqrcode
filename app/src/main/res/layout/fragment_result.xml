@@ -19,7 +19,7 @@
             android:layout_height="wrap_content"
             android:text="@string/hello_blank_fragment"
             android:gravity="center"
-            android:textColor="@color/colorAccent"/>
+            android:textColor="@color/colorPrimaryDark"/>
 
     </ScrollView>
 

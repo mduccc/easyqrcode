@@ -1,6 +1,7 @@
 package com.indieteam.qrcode.ui.camera
 
 import android.hardware.camera2.CameraDevice
+import android.support.constraint.ConstraintLayout
 import android.view.Surface
 import android.widget.RelativeLayout
 import com.indieteam.qrcode.process.callback.CameraPreviewSessionCallback
@@ -12,7 +13,7 @@ class CameraPreview(val activity: MainActivity){
 
     fun init(){
         activity.runOnUiThread {
-            val layoutParam = RelativeLayout.LayoutParams(activity.widthPixels, (activity.widthPixels * activity.camOutputSizeWidth) / activity.camOutputSizeHeight)
+            val layoutParam = ConstraintLayout.LayoutParams(activity.widthPixels, (activity.widthPixels * activity.camOutputSizeWidth) / activity.camOutputSizeHeight)
             activity.mytextureView.layoutParams = layoutParam
             activity.mytextureView.y = (activity.heightPixels / 100f) * 50f - ((activity.widthPixels * activity.camOutputSizeWidth) / activity.camOutputSizeHeight) / 2f
             activity.drawOnPrevew = DrawOnPrevew(activity)

@@ -1,6 +1,7 @@
 package com.indieteam.qrcode.ui.activity
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.pm.ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
@@ -70,23 +71,6 @@ open class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissio
 
     companion object { val ORIENTATIONS = SparseIntArray() }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN)
-        setContentView(activity_main)
-        val detectedCam = DetectedCamera(this)
-        //val getListCam = getListCameraDevice(this)
-        val permissions = Permission(this)
-        /*--detectedCamera--*/
-        if (detectedCam.checkCameraHardware()){
-            if (permissions.getPermissionCam()){
-                init()
-                mytextureView.surfaceTextureListener = TextureListener()
-            }
-        }
-    }
-
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         if (requestCode == PERMISSIONS_REQUEST_CAMERA) {
             // Request for camera permission.
@@ -113,6 +97,7 @@ open class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissio
         override fun onSurfaceTextureAvailable(surface: SurfaceTexture?, width: Int, height: Int) { open() }
     }
 
+    @SuppressLint("InvalidWakeLockTag")
     private fun init(){
         ORIENTATIONS.let {
             it.append(Surface.ROTATION_0, 90)
@@ -224,7 +209,8 @@ open class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissio
             checkMlCallback = 1
             start()
             open()
-        }
+        }else
+            finish()
     }
 
     private fun start(){
@@ -240,5 +226,23 @@ open class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissio
         }catch (e: UninitializedPropertyAccessException){ e.printStackTrace() }
         try { mBackgroundThread.join()
         }catch (e: InterruptedException){ e.printStackTrace() }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN)
+        setContentView(activity_main)
+        val detectedCam = DetectedCamera(this)
+        //val getListCam = getListCameraDevice(this)
+        val permissions = Permission(this)
+        /*--detectedCamera--*/
+        if (detectedCam.checkCameraHardware()){
+            if (permissions.getPermissionCam()){
+                init()
+                mytextureView.surfaceTextureListener = TextureListener()
+            }
+        }
+        btn_float.setOnClickListener { startActivity(Intent(this, GenQRActivity::class.java)) }
     }
 }
