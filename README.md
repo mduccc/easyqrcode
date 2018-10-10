@@ -18,7 +18,7 @@
 <img src="https://i.imgur.com/oOAcY3T.png" width="30%" height="30%">
 <h3>Result:<h3>
 <img src="https://i.imgur.com/Hlhr6oR.png" width="30%" height="30%">
-<h3>Make QR code</h3>
+<h3>Make QR code:</h3>
 <img src="https://i.imgur.com/rN8z62B.png" width="30%" height="30%">
 <br>
 Dev: Nguyen Minh Duc
